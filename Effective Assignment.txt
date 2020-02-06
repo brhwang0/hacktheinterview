@@ -1,0 +1,84 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+
+    /*
+     * Complete the 'minAccommodationFactor' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts following parameters:
+     *  1. INTEGER_ARRAY door
+     *  2. INTEGER_ARRAY status
+     */
+
+    public static int minAccommodationFactor(List<Integer> door, List<Integer> status) {
+    // Write your code here
+        int result = 0;
+        
+        if (door.size() == 0 || status.size() == 0) {
+            return 0;
+        }
+        if (door.size() == 1) {
+            return status.size();
+        }
+        
+        int largest = door.get(0), secondLargest = door.get(0);
+        for (int i = 1; i < door.size(); i++) {
+            if (door.get(i) > largest) {
+                secondLargest = largest;
+                largest = door.get(i);
+            }
+            if (door.get(i) > secondLargest && door.get(i) != largest) {
+                secondLargest = door.get(i);
+            }
+        }
+        
+        for (int i = 0; i < status.size(); i++) {
+            if (status.get(i) > secondLargest) {
+                result++;
+            }
+        }
+        return result;
+
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String[] firstMultipleInput = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+
+        int n = Integer.parseInt(firstMultipleInput[0]);
+
+        int m = Integer.parseInt(firstMultipleInput[1]);
+
+        List<Integer> door = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+            .map(Integer::parseInt)
+            .collect(toList());
+
+        List<Integer> status = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+            .map(Integer::parseInt)
+            .collect(toList());
+
+        int ans = Result.minAccommodationFactor(door, status);
+
+        bufferedWriter.write(String.valueOf(ans));
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}

@@ -1,0 +1,80 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+    
+    public static int findMax(List<Integer> arr) {
+        int max = arr.get(0);
+        for (int i: arr) {
+            if (i > max) {
+                max = i;
+            }
+        }
+        return max;
+    }
+
+    /*
+     * Complete the 'countStocks' function below.
+     *
+     * The function is expected to return a LONG_INTEGER.
+     * The function accepts INTEGER_ARRAY stocks as parameter.
+     */
+
+    public static long countStocks(List<Integer> stocks) {
+    // Write your code here
+        long result = 0;
+        int turn = 0;
+        while (stocks.size() != 0) {
+            int max = findMax(stocks);
+            int maxI = stocks.indexOf(max);
+            
+            stocks.remove(maxI);
+            for (int i = 0; i < stocks.size(); i++) {
+                if (stocks.get(i) == max) {
+                    stocks.set(i, stocks.get(i) / 2);
+                    if (stocks.get(i) == 0) {
+                        stocks.remove(i);
+                    }
+                }
+            }
+            
+            if (turn % 2 != 0) {
+                result += max;
+            }
+            turn++;
+            
+        }
+        return result;
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int stocksCount = Integer.parseInt(bufferedReader.readLine().trim());
+
+        List<Integer> stocks = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+            .map(Integer::parseInt)
+            .collect(toList());
+
+        long ans = Result.countStocks(stocks);
+
+        bufferedWriter.write(String.valueOf(ans));
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
